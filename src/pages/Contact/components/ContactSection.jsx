@@ -72,7 +72,12 @@ export default function ContactSection() {
           </div>
 
           {/* Right column — form card */}
-          <Reveal animation="fade-scale" delay={180} className="bg-white p-10 lg:p-14 shadow-sm">
+          <Reveal
+            animation="fade-scale"
+            delay={180}
+            className="bg-white p-10 lg:p-14 shadow-sm scroll-mt-24"
+            id="reservation-form"
+          >
             <h3
               className="text-[#1a1a1a] text-4xl md:text-5xl mb-10 font-light font-serif"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}

@@ -17,11 +17,30 @@ export function TransitionProvider({ children }) {
 
   const navigateWithTransition = useCallback(
     (to) => {
+      const [pathWithoutHash, hash] = to.split("#");
       const currentPath = location.pathname;
-      const targetPath = to === "/home" ? "/" : to;
+      const targetPath = pathWithoutHash === "/home" ? "/" : pathWithoutHash;
       const normalizedCurrent = currentPath === "/home" ? "/" : currentPath;
 
-      if (normalizedCurrent === targetPath || isNavigatingRef.current) {
+      // If already on the same page
+      if (normalizedCurrent === targetPath) {
+        if (hash) {
+          const targetEl =
+            (window.innerWidth < 1024
+              ? document.getElementById("reservation-form")
+              : document.getElementById(hash)) ||
+            document.getElementById(hash) ||
+            document.getElementById("reservation-form");
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }
+        return;
+      }
+
+      if (isNavigatingRef.current) {
         return;
       }
 
@@ -32,7 +51,23 @@ export function TransitionProvider({ children }) {
       // Midpoint: screen is 100% covered by the luxury curtain
       setTimeout(() => {
         navigate(to);
-        window.scrollTo(0, 0);
+        if (hash) {
+          setTimeout(() => {
+            const targetEl =
+              (window.innerWidth < 1024
+                ? document.getElementById("reservation-form")
+                : document.getElementById(hash)) ||
+              document.getElementById(hash) ||
+              document.getElementById("reservation-form");
+            if (targetEl) {
+              targetEl.scrollIntoView({ behavior: "smooth" });
+            } else {
+              window.scrollTo(0, 0);
+            }
+          }, 80);
+        } else {
+          window.scrollTo(0, 0);
+        }
       }, 380);
 
       // End of curtain wipe: overlay has glided off the top

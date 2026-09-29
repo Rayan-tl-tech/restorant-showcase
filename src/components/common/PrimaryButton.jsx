@@ -32,6 +32,10 @@ export default function PrimaryButton({
       <Link
         to={to}
         onClick={(e) => {
+          if (props.onClick) {
+            props.onClick(e);
+            if (e.defaultPrevented) return;
+          }
           e.preventDefault();
           navigateWithTransition(to);
         }}

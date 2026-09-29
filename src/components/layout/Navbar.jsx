@@ -114,10 +114,10 @@ export default function Navbar({ activeLink = "" }) {
         </nav>
 
         <Link
-          to="/contact"
+          to="/contact#reservation-enquiry"
           onClick={(e) => {
             e.preventDefault();
-            navigateWithTransition("/contact");
+            navigateWithTransition("/contact#reservation-enquiry");
           }}
           className={`hidden lg:inline-flex items-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-colors duration-300 ${reserveBtnClass}`}
           style={{ fontFamily: "'Inter', sans-serif" }}
@@ -167,11 +167,11 @@ export default function Navbar({ activeLink = "" }) {
             </Link>
           ))}
           <Link
-            to="/contact"
+            to="/contact#reservation-enquiry"
             onClick={(e) => {
               e.preventDefault();
               setMobileOpen(false);
-              navigateWithTransition("/contact");
+              navigateWithTransition("/contact#reservation-enquiry");
             }}
             className={`inline-block px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans text-white transition-colors ${reserveBtnClass}`}
             style={{ fontFamily: "'Inter', sans-serif" }}

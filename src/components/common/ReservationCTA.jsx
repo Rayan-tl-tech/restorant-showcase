@@ -39,7 +39,7 @@ export default function ReservationCTA({
           </p>
         </Reveal>
         <Reveal animation="fade-up" delay={450}>
-          <PrimaryButton variant="terracotta" to="/contact">
+          <PrimaryButton variant="terracotta" to="/contact#reservation-enquiry">
             {buttonText}
           </PrimaryButton>
         </Reveal>

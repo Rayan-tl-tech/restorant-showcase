@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../common/Logo";
 import SectionLabel from "../common/SectionLabel";
 import PrimaryButton from "../common/PrimaryButton";
@@ -15,6 +15,13 @@ const EXPLORE_ITEMS = [
 
 export default function Footer() {
   const { navigateWithTransition } = usePageTransition();
+  const location = useLocation();
+
+  const handlePlanYourVisit = (e) => {
+    e.preventDefault();
+    navigateWithTransition("/contact#reservation-enquiry");
+  };
+
   return (
     <footer className="bg-[#1a1a1a] text-white">
       {/* Top Banner / Callout */}
@@ -34,7 +41,11 @@ export default function Footer() {
                 An evening shaped<br />
                 around the flame.
               </h2>
-              <PrimaryButton variant="outlineLight" to="/contact">
+              <PrimaryButton
+                variant="outlineLight"
+                to="/contact#reservation-enquiry"
+                onClick={handlePlanYourVisit}
+              >
                 Plan Your Visit
               </PrimaryButton>
             </div>
