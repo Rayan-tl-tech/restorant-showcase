@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SectionLabel from "../../../components/common/SectionLabel";
 import PrimaryButton from "../../../components/common/PrimaryButton";
+import Reveal from "../../../components/common/Reveal";
 import { CONTACT_INFO } from "../data/contactData";
 
 export default function ContactSection() {
@@ -22,26 +23,30 @@ export default function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Left column */}
           <div>
-            <SectionLabel className="text-[#1a1a1a]/70 mb-8">
-              Get in Touch
-            </SectionLabel>
-            <h2
-              className="text-[#1a1a1a] text-[clamp(2.5rem,5.5vw,5rem)] leading-[1.05] mb-8 font-light font-serif"
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            >
-              We'd be<br />
-              delighted to hear<br />
-              from you.
-            </h2>
-            <p className="text-[#1a1a1a]/70 text-base md:text-lg leading-relaxed mb-16 max-w-md font-sans">
-              The fields below are non-functional visual placeholders for this portfolio
-              demonstration.
-            </p>
+            <Reveal animation="fade-up" delay={100}>
+              <SectionLabel className="text-[#1a1a1a]/70 mb-8">
+                Get in Touch
+              </SectionLabel>
+              <h2
+                className="text-[#1a1a1a] text-[clamp(2.5rem,5.5vw,5rem)] leading-[1.05] mb-8 font-light font-serif"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                We'd be<br />
+                delighted to hear<br />
+                from you.
+              </h2>
+              <p className="text-[#1a1a1a]/70 text-base md:text-lg leading-relaxed mb-16 max-w-md font-sans">
+                The fields below are non-functional visual placeholders for this portfolio
+                demonstration.
+              </p>
+            </Reveal>
 
             <div className="space-y-0">
               {CONTACT_INFO.map((item, i) => (
-                <div
+                <Reveal
                   key={item.label}
+                  animation="fade-up"
+                  delay={150 + i * 100}
                   className={`py-8 ${i < CONTACT_INFO.length - 1 ? "border-b border-[#1a1a1a]/15" : ""}`}
                 >
                   <div className="grid grid-cols-3 gap-6 items-start">
@@ -61,13 +66,13 @@ export default function ContactSection() {
                       <p className="text-[#1a1a1a]/60 text-sm font-sans">{item.subtitle}</p>
                     </div>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
 
           {/* Right column — form card */}
-          <div className="bg-white p-10 lg:p-14 shadow-sm">
+          <Reveal animation="fade-scale" delay={180} className="bg-white p-10 lg:p-14 shadow-sm">
             <h3
               className="text-[#1a1a1a] text-4xl md:text-5xl mb-10 font-light font-serif"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
@@ -185,7 +190,7 @@ export default function ContactSection() {
                 </p>
               </div>
             </form>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -93,3 +93,62 @@
 .emblem-motion {
   animation: figmaEmblemMotion 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ==========================================================================
+   Editorial Scroll Reveal Engine (Luxury Hospitality Micro-Motions)
+   ========================================================================== */
+.editorial-reveal {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-duration: var(--reveal-duration, 900ms);
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.editorial-reveal[data-animation="fade-up"] {
+  transform: translate3d(0, 28px, 0);
+}
+
+.editorial-reveal[data-animation="fade-down"] {
+  transform: translate3d(0, -24px, 0);
+}
+
+.editorial-reveal[data-animation="fade-left"] {
+  transform: translate3d(32px, 0, 0);
+}
+
+.editorial-reveal[data-animation="fade-right"] {
+  transform: translate3d(-32px, 0, 0);
+}
+
+.editorial-reveal[data-animation="fade-scale"] {
+  transform: scale3d(0.96, 0.96, 1) translate3d(0, 16px, 0);
+}
+
+.editorial-reveal[data-animation="fade"] {
+  transform: none;
+}
+
+/* Revealed State */
+.editorial-reveal.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+}
+
+/* Image Slow Pan & Depth */
+.reveal-img-container {
+  overflow: hidden;
+}
+
+.reveal-img-container img {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

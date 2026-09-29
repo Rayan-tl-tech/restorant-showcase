@@ -1,3 +1,5 @@
+import Reveal from "../../../components/common/Reveal";
+
 export default function MapPlaceholder() {
   return (
     <section
@@ -13,20 +15,22 @@ export default function MapPlaceholder() {
       }}
     >
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 text-center">
-        <div className="inline-block border border-[#1a1a1a]/30 px-10 py-5 mb-6 bg-[#e8e4dc]/80 backdrop-blur-sm">
+        <Reveal animation="fade-scale" delay={100} className="inline-block border border-[#1a1a1a]/30 px-10 py-5 mb-6 bg-[#e8e4dc]/80 backdrop-blur-sm">
           <span
             className="text-[#1a1a1a]/70 text-[11px] font-medium uppercase font-sans"
             style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "0.25em" }}
           >
             Interactive Map Placeholder
           </span>
-        </div>
-        <p
-          className="text-[#1a1a1a]/60 text-2xl md:text-3xl font-light font-serif"
-          style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }}
-        >
-          Future restaurant location
-        </p>
+        </Reveal>
+        <Reveal animation="fade-up" delay={200}>
+          <p
+            className="text-[#1a1a1a]/60 text-2xl md:text-3xl font-light font-serif"
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }}
+          >
+            Future restaurant location
+          </p>
+        </Reveal>
       </div>
     </section>
   );

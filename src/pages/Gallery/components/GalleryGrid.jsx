@@ -1,3 +1,4 @@
+import Reveal from "../../../components/common/Reveal";
 import { GALLERY_ITEMS } from "../data/galleryData";
 
 export default function GalleryGrid() {
@@ -5,9 +6,12 @@ export default function GalleryGrid() {
     <section className="bg-[#f4f1ea] pb-24 lg:pb-36">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-          {GALLERY_ITEMS.map((item) => (
-            <figure
+          {GALLERY_ITEMS.map((item, i) => (
+            <Reveal
               key={item.id}
+              as="figure"
+              animation="fade-scale"
+              delay={(i % 4) * 120}
               className={`group relative overflow-hidden bg-[#1a1a1a] ${item.span} ${item.aspect}`}
             >
               <img
@@ -36,7 +40,7 @@ export default function GalleryGrid() {
                   )}
                 </div>
               )}
-            </figure>
+            </Reveal>
           ))}
         </div>
       </div>
