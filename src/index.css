@@ -12,3 +12,84 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.page-transition {
+  animation: pageEnter 0.35s ease-out;
+}
+
+@keyframes routeProgress {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+    opacity: 0.8;
+  }
+  65% {
+    transform: scaleX(0.85);
+    transform-origin: left;
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+    opacity: 0;
+  }
+}
+
+.animate-routeProgress {
+  animation: routeProgress 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Figma Make Luxury Curtain Wipe */
+@keyframes figmaPageWipe {
+  0% {
+    transform: translate3d(0, 100%, 0);
+    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  38% {
+    transform: translate3d(0, 0%, 0);
+  }
+  58% {
+    transform: translate3d(0, 0%, 0);
+    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  100% {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+@keyframes figmaEmblemMotion {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  32% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  64% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+.curtain-wipe {
+  animation: figmaPageWipe 0.85s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  will-change: transform;
+}
+
+.emblem-motion {
+  animation: figmaEmblemMotion 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

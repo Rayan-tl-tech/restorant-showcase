@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ArrowIcon from "./ArrowIcon";
+import { usePageTransition } from "../../context/TransitionContext";
 
 export default function PrimaryButton({
   children,
@@ -9,6 +10,7 @@ export default function PrimaryButton({
   href,
   ...props
 }) {
+  const { navigateWithTransition } = usePageTransition();
   const variants = {
     terracotta: "bg-[#a85a3a] text-white hover:bg-[#8f4a2e]",
     teal: "bg-[#5ba4b8] text-white hover:bg-[#4a8fa3]",
@@ -27,7 +29,15 @@ export default function PrimaryButton({
 
   if (to) {
     return (
-      <Link to={to} className={baseStyles} {...props}>
+      <Link
+        to={to}
+        onClick={(e) => {
+          e.preventDefault();
+          navigateWithTransition(to);
+        }}
+        className={baseStyles}
+        {...props}
+      >
         {content}
       </Link>
     );

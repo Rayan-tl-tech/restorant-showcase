@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Logo from "../common/Logo";
 import SectionLabel from "../common/SectionLabel";
 import PrimaryButton from "../common/PrimaryButton";
+import { usePageTransition } from "../../context/TransitionContext";
 
 const EXPLORE_ITEMS = [
   { name: "Home", path: "/" },
@@ -12,6 +13,7 @@ const EXPLORE_ITEMS = [
 ];
 
 export default function Footer() {
+  const { navigateWithTransition } = usePageTransition();
   return (
     <footer className="bg-[#1a1a1a] text-white">
       {/* Top Banner / Callout */}
@@ -28,7 +30,7 @@ export default function Footer() {
               An evening shaped<br />
               around the flame.
             </h2>
-            <PrimaryButton variant="outlineLight" href="#reserve">
+            <PrimaryButton variant="outlineLight" to="/contact">
               Plan Your Visit
             </PrimaryButton>
           </div>
@@ -58,6 +60,10 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     to={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateWithTransition(item.path);
+                    }}
                     className="text-white/70 hover:text-white text-sm transition-colors"
                   >
                     {item.name}

@@ -22,7 +22,7 @@ export const MENU_DISHES = [
     name: "Line-caught sea bass",
     price: "$42",
     description: "Fennel, citrus beurre blanc, coastal herbs",
-    image: "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&q=80",
     category: "From the Coast",
   },
   {
