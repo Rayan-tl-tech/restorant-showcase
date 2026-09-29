@@ -217,3 +217,45 @@
 .animate-lightbox-slide-prev {
   animation: lightboxSlidePrev 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ==========================================================================
+   Luxury Dish Detail Drawer Engine
+   ========================================================================== */
+@keyframes drawerBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawerSlideInRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes drawerSlideInBottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-drawer-backdrop {
+  animation: drawerBackdropIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-drawer-desktop {
+  animation: drawerSlideInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-drawer-mobile {
+  animation: drawerSlideInBottom 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
