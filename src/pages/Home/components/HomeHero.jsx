@@ -1,12 +1,9 @@
-import { Link } from "react-router-dom";
 import SectionLabel from "../../../components/common/SectionLabel";
 import PrimaryButton from "../../../components/common/PrimaryButton";
 import Reveal from "../../../components/common/Reveal";
 import { HOME_IMAGES } from "../data/homeData";
-import { usePageTransition } from "../../../context/TransitionContext";
 
 export default function HomeHero() {
-  const { navigateWithTransition } = usePageTransition();
   return (
     <section
       id="home"
@@ -52,14 +49,18 @@ export default function HomeHero() {
 
           <Reveal animation="fade-up" delay={520}>
             <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              <PrimaryButton variant="terracotta" to="/contact">
+              <PrimaryButton variant="terracotta" href="#contact">
                 Reservation
               </PrimaryButton>
-              <Link
-                to="/menu"
+              <a
+                href="#menu"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigateWithTransition("/menu");
+                  const el = document.getElementById("menu");
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                    window.history.replaceState(null, "", "#menu");
+                  }
                 }}
                 className="group inline-flex items-center gap-3 text-white text-[11px] font-semibold uppercase tracking-[0.2em] font-sans border-b border-white/40 pb-2 hover:border-white transition-colors"
                 style={{ fontFamily: "'Inter', sans-serif" }}
@@ -75,7 +76,7 @@ export default function HomeHero() {
                 >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </div>
           </Reveal>
         </div>

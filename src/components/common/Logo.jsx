@@ -1,9 +1,16 @@
-import { Link } from "react-router-dom";
-import { usePageTransition } from "../../context/TransitionContext";
-
 export default function Logo({ variant = "light", asLink = true }) {
   const isLight = variant === "light";
-  const { navigateWithTransition } = usePageTransition();
+
+  const handleScrollToHome = (e) => {
+    e.preventDefault();
+    const el = document.getElementById("home");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", "#home");
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const content = (
     <div className="flex items-center gap-4 group">
@@ -44,17 +51,14 @@ export default function Logo({ variant = "light", asLink = true }) {
 
   if (asLink) {
     return (
-      <Link
-        to="/"
-        onClick={(e) => {
-          e.preventDefault();
-          navigateWithTransition("/");
-        }}
+      <a
+        href="#home"
+        onClick={handleScrollToHome}
         aria-label="Maison Ember Home"
-        className="inline-block focus:outline-none"
+        className="inline-block focus:outline-none cursor-pointer"
       >
         {content}
-      </Link>
+      </a>
     );
   }
 

@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import ArrowIcon from "./ArrowIcon";
-import { usePageTransition } from "../../context/TransitionContext";
 
 export default function PrimaryButton({
   children,
@@ -10,7 +8,6 @@ export default function PrimaryButton({
   href,
   ...props
 }) {
-  const { navigateWithTransition } = usePageTransition();
   const variants = {
     terracotta: "bg-[#a85a3a] text-white hover:bg-[#8f4a2e]",
     teal: "bg-[#5ba4b8] text-white hover:bg-[#4a8fa3]",
@@ -27,29 +24,34 @@ export default function PrimaryButton({
     </>
   );
 
-  if (to) {
+  const handleAnchorClick = (e, target) => {
+    if (props.onClick) {
+      props.onClick(e);
+      if (e.defaultPrevented) return;
+    }
+    if (target && target.startsWith("#")) {
+      e.preventDefault();
+      const id = target.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        window.history.replaceState(null, "", target);
+      } else if (id === "home") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
+
+  const linkTarget = href || to;
+
+  if (linkTarget) {
     return (
-      <Link
-        to={to}
-        onClick={(e) => {
-          if (props.onClick) {
-            props.onClick(e);
-            if (e.defaultPrevented) return;
-          }
-          e.preventDefault();
-          navigateWithTransition(to);
-        }}
+      <a
+        href={linkTarget}
+        onClick={(e) => handleAnchorClick(e, linkTarget)}
         className={baseStyles}
         {...props}
       >
-        {content}
-      </Link>
-    );
-  }
-
-  if (href) {
-    return (
-      <a href={href} className={baseStyles} {...props}>
         {content}
       </a>
     );

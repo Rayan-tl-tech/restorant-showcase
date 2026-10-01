@@ -18,7 +18,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="reservation-enquiry" className="bg-[#f4f1ea] py-24 lg:py-36 scroll-mt-24">
+    <section id="contact" className="bg-[#f4f1ea] py-24 lg:py-36 border-t border-[#1a1a1a]/10 scroll-mt-20">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Left column */}
@@ -76,7 +76,7 @@ export default function ContactSection() {
             animation="fade-scale"
             delay={180}
             className="bg-white p-10 lg:p-14 shadow-sm scroll-mt-24"
-            id="reservation-form"
+            id="reservation-enquiry"
           >
             <h3
               className="text-[#1a1a1a] text-4xl md:text-5xl mb-10 font-light font-serif"

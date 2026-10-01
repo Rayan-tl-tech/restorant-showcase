@@ -1,14 +1,10 @@
 import { useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
-import ReservationCTA from "../../components/common/ReservationCTA";
 import HomeHero from "./components/HomeHero";
-import ConceptIntro from "./components/ConceptIntro";
-import FeaturedPlates from "./components/FeaturedPlates";
-import Story from "./components/Story";
-import Approach from "./components/Approach";
-import HomeGallery from "./components/HomeGallery";
-import { HOME_IMAGES } from "./data/homeData";
+import MenuSection from "../Menu/components/MenuSection";
+import ContactSection from "../Contact/components/ContactSection";
+import MapPlaceholder from "../Contact/components/MapPlaceholder";
 
 export default function Home() {
   useEffect(() => {
@@ -17,21 +13,29 @@ export default function Home() {
     if (metaDescription) {
       metaDescription.setAttribute(
         "content",
-        "Maison Ember is a cinematic restaurant website demo showcasing seasonal gastronomy, atmospheric dining, and modern culinary design."
+        "Maison Ember is a cinematic restaurant website demo showcasing seasonal gastronomy, hearth-fired cooking, and modern culinary design."
       );
+    }
+
+    // Smooth scroll if URL loaded with hash (e.g. /#menu, /#contact)
+    if (window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 150);
+      }
     }
   }, []);
 
   return (
     <main className="bg-[#f4f1ea] min-h-screen text-[#1a1a1a] selection:bg-[#a85a3a] selection:text-white">
-      <Navbar theme="dark" activeLink="Home" />
+      <Navbar />
       <HomeHero />
-      <ConceptIntro />
-      <FeaturedPlates />
-      <Story />
-      <Approach />
-      <HomeGallery />
-      <ReservationCTA bgImage={HOME_IMAGES.ctaBg} />
+      <MenuSection />
+      <ContactSection />
+      <MapPlaceholder />
       <Footer />
     </main>
   );

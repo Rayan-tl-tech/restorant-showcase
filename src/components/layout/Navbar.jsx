@@ -1,33 +1,40 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import Logo from "../common/Logo";
 import ArrowIcon from "../common/ArrowIcon";
-import { usePageTransition } from "../../context/TransitionContext";
 
 const NAV_ITEMS = [
-  { name: "Home", path: "/" },
-  { name: "Menu", path: "/menu" },
-  { name: "About", path: "/about" },
-  { name: "Gallery", path: "/gallery" },
-  { name: "Contact", path: "/contact" },
+  { name: "Home", id: "home" },
+  { name: "Menu", id: "menu" },
+  { name: "Contact", id: "contact" },
 ];
 
-export default function Navbar({ activeLink = "" }) {
+export default function Navbar() {
+  const [activeSection, setActiveSection] = useState("home");
   const [isOverImage, setIsOverImage] = useState(false);
   const [isPastHero, setIsPastHero] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
-  const { navigateWithTransition, isTransitioning, pendingPath } = usePageTransition();
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const hero = document.querySelector("main > section:first-of-type");
-      const heroThreshold = hero ? Math.max(hero.offsetHeight - 80, 200) : 500;
-      const pastHero = scrollY >= heroThreshold;
-      setIsPastHero(pastHero);
+      const homeEl = document.getElementById("home");
+      const heroThreshold = homeEl ? Math.max(homeEl.offsetHeight - 80, 200) : 500;
+      setIsPastHero(scrollY >= heroThreshold);
 
-      // Check if navbar (vertical band 0 to 65px) crosses any image on the page
+      // Section tracking for active navigation highlight
+      const scrollPos = scrollY + 220;
+      const contactEl = document.getElementById("contact");
+      const menuEl = document.getElementById("menu");
+
+      if (contactEl && scrollPos >= contactEl.offsetTop) {
+        setActiveSection("contact");
+      } else if (menuEl && scrollPos >= menuEl.offsetTop) {
+        setActiveSection("menu");
+      } else {
+        setActiveSection("home");
+      }
+
+      // Check if navbar (vertical band 0 to 65px) crosses any dark/contrast image
       const navBottom = 65;
       const images = document.querySelectorAll("main img");
       let overImg = false;
@@ -44,23 +51,20 @@ export default function Navbar({ activeLink = "" }) {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [location.pathname]);
+  }, []);
 
-  // Determine active state based on route or prop, immediately following pendingPath during wipe
-  const isLinkActive = (item) => {
-    const activeRoute = pendingPath || location.pathname;
-    if (activeLink && !pendingPath) {
-      return item.name.toLowerCase() === activeLink.toLowerCase();
+  const scrollToSection = (id) => {
+    setMobileOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", `#${id}`);
+    } else if (id === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-    if (item.path === "/") {
-      return activeRoute === "/" || activeRoute === "/home";
-    }
-    return activeRoute.startsWith(item.path);
   };
 
-  // During transition, keep navbar in luxury light text / terracotta button over the dark curtain
-  const showDarkNavbar = !isTransitioning && isPastHero && !isOverImage;
-
+  const showDarkNavbar = isPastHero && !isOverImage;
   const logoVariant = showDarkNavbar ? "dark" : "light";
   const textClass = showDarkNavbar
     ? "text-[#1a1a1a]"
@@ -89,14 +93,14 @@ export default function Navbar({ activeLink = "" }) {
 
         <nav className="hidden lg:flex items-center gap-10" aria-label="Main Navigation">
           {NAV_ITEMS.map((item) => {
-            const active = isLinkActive(item);
+            const active = activeSection === item.id;
             return (
-              <Link
-                key={item.name}
-                to={item.path}
+              <a
+                key={item.id}
+                href={`#${item.id}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  navigateWithTransition(item.path);
+                  scrollToSection(item.id);
                 }}
                 className={`text-[12px] font-medium transition-colors tracking-[0.15em] font-sans ${
                   active ? textClass : mutedClass
@@ -108,23 +112,23 @@ export default function Navbar({ activeLink = "" }) {
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 {item.name}
-              </Link>
+              </a>
             );
           })}
         </nav>
 
-        <Link
-          to="/contact#reservation-enquiry"
+        <a
+          href="#contact"
           onClick={(e) => {
             e.preventDefault();
-            navigateWithTransition("/contact#reservation-enquiry");
+            scrollToSection("contact");
           }}
           className={`hidden lg:inline-flex items-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-colors duration-300 ${reserveBtnClass}`}
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Reserve
           <ArrowIcon className="w-3 h-3" />
-        </Link>
+        </a>
 
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -152,32 +156,30 @@ export default function Navbar({ activeLink = "" }) {
           }`}
         >
           {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
+            <a
+              key={item.id}
+              href={`#${item.id}`}
               onClick={(e) => {
                 e.preventDefault();
-                setMobileOpen(false);
-                navigateWithTransition(item.path);
+                scrollToSection(item.id);
               }}
               className="block text-sm uppercase tracking-[0.2em] font-sans hover:opacity-70 transition-opacity"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               {item.name}
-            </Link>
+            </a>
           ))}
-          <Link
-            to="/contact#reservation-enquiry"
+          <a
+            href="#contact"
             onClick={(e) => {
               e.preventDefault();
-              setMobileOpen(false);
-              navigateWithTransition("/contact#reservation-enquiry");
+              scrollToSection("contact");
             }}
             className={`inline-block px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans text-white transition-colors ${reserveBtnClass}`}
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Reserve
-          </Link>
+          </a>
         </div>
       )}
     </header>

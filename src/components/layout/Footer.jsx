@@ -1,25 +1,23 @@
-import { Link, useLocation } from "react-router-dom";
 import Logo from "../common/Logo";
 import SectionLabel from "../common/SectionLabel";
 import PrimaryButton from "../common/PrimaryButton";
 import Reveal from "../common/Reveal";
-import { usePageTransition } from "../../context/TransitionContext";
 
 const EXPLORE_ITEMS = [
-  { name: "Home", path: "/" },
-  { name: "Menu", path: "/menu" },
-  { name: "About", path: "/about" },
-  { name: "Gallery", path: "/gallery" },
-  { name: "Contact", path: "/contact" },
+  { name: "Home", id: "home" },
+  { name: "Menu", id: "menu" },
+  { name: "Contact", id: "contact" },
 ];
 
 export default function Footer() {
-  const { navigateWithTransition } = usePageTransition();
-  const location = useLocation();
-
-  const handlePlanYourVisit = (e) => {
-    e.preventDefault();
-    navigateWithTransition("/contact#reservation-enquiry");
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", `#${id}`);
+    } else if (id === "home") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (
@@ -43,8 +41,11 @@ export default function Footer() {
               </h2>
               <PrimaryButton
                 variant="outlineLight"
-                to="/contact#reservation-enquiry"
-                onClick={handlePlanYourVisit}
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("contact");
+                }}
               >
                 Plan Your Visit
               </PrimaryButton>
@@ -73,17 +74,17 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 font-sans">
               {EXPLORE_ITEMS.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    to={item.path}
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      navigateWithTransition(item.path);
+                      scrollToSection(item.id);
                     }}
-                    className="text-white/70 hover:text-white text-sm transition-colors"
+                    className="text-white/70 hover:text-white text-sm transition-colors cursor-pointer"
                   >
                     {item.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

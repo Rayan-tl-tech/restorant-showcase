@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { usePageTransition } from "../../../context/TransitionContext";
 
 /**
  * DishDetailDrawer — Luxury Editorial Dish Detail Panel
@@ -13,7 +11,6 @@ export default function DishDetailDrawer({ isOpen, dish, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
   const closeBtnRef = useRef(null);
   const drawerRef = useRef(null);
-  const { navigateWithTransition } = usePageTransition();
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
@@ -278,18 +275,22 @@ export default function DishDetailDrawer({ isOpen, dish, onClose }) {
 
         {/* ---------------- Bottom Drawer Footer ---------------- */}
         <div className="p-6 sm:px-8 border-t border-[#1a1a1a]/10 bg-[#f7f5f0] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Link
-            to="/contact"
+          <a
+            href="#contact"
             onClick={(e) => {
               e.preventDefault();
               handleClose();
-              navigateWithTransition("/contact");
+              const el = document.getElementById("contact");
+              if (el) {
+                el.scrollIntoView({ behavior: "smooth" });
+                window.history.replaceState(null, "", "#contact");
+              }
             }}
             className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 bg-[#a85a3a] hover:bg-[#8e492c] text-white text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors font-sans"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             Reservation Enquiry
-          </Link>
+          </a>
           <button
             onClick={handleClose}
             className="text-[11px] uppercase tracking-[0.2em] text-[#1a1a1a]/60 hover:text-[#1a1a1a] transition-colors font-sans py-2"
