@@ -7,12 +7,26 @@ import { MENU_CATEGORIES, MENU_DISHES } from "../../../data/menuData";
 
 export default function MenuSection() {
   const [activeCategory, setActiveCategory] = useState("All Plates");
+  const [displayCategory, setDisplayCategory] = useState("All Plates");
+  const [isCategoryFading, setIsCategoryFading] = useState(false);
   const [selectedDish, setSelectedDish] = useState(null);
 
+  const handleCategorySelect = (category) => {
+    if (category === activeCategory || isCategoryFading) return;
+    setActiveCategory(category);
+    setIsCategoryFading(true);
+
+    // Smooth exit phase (150ms) followed by staggered entry
+    setTimeout(() => {
+      setDisplayCategory(category);
+      setIsCategoryFading(false);
+    }, 150);
+  };
+
   const filteredDishes =
-    activeCategory === "All Plates"
+    displayCategory === "All Plates"
       ? MENU_DISHES
-      : MENU_DISHES.filter((d) => d.category === activeCategory);
+      : MENU_DISHES.filter((d) => d.category === displayCategory);
 
   return (
     <section id="menu" className="bg-[#f4f1ea] py-24 lg:py-36 scroll-mt-20">
@@ -41,7 +55,7 @@ export default function MenuSection() {
           </Reveal>
         </div>
 
-        {/* Category tabs */}
+        {/* Category Filter Tabs */}
         <Reveal animation="fade-down" delay={100}>
           <div
             className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12 mb-16"
@@ -55,8 +69,8 @@ export default function MenuSection() {
                   key={cat}
                   role="tab"
                   aria-selected={isActive}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`text-[11px] font-medium uppercase pb-3 transition-all duration-200 tracking-[0.2em] font-sans ${
+                  onClick={() => handleCategorySelect(cat)}
+                  className={`text-[11px] font-medium uppercase pb-3 transition-all duration-200 tracking-[0.2em] font-sans focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] ${
                     isActive
                       ? "text-[#a85a3a] border-b-2 border-[#a85a3a]"
                       : "text-[#1a1a1a]/60 hover:text-[#1a1a1a] border-b-2 border-transparent"
@@ -72,17 +86,22 @@ export default function MenuSection() {
 
         <div className="h-px bg-[#1a1a1a]/15 mb-16" />
 
-        {/* Dish grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
+        {/* Dish Grid with Staggered Transition */}
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 transition-all duration-200 ease-out ${
+            isCategoryFading ? "opacity-0 translate-y-2 pointer-events-none" : "opacity-100 translate-y-0"
+          }`}
+        >
           {filteredDishes.map((dish, i) => (
-            <Reveal
-              key={`${activeCategory}-${dish.id}`}
-              animation="fade-scale"
-              delay={(i % 6) * 110}
-              className="h-full"
+            <div
+              key={`${displayCategory}-${dish.id}`}
+              className="h-full animate-dish-cascade"
+              style={{
+                animationDelay: `${Math.min(i * 40, 240)}ms`,
+              }}
             >
               <MenuCard dish={dish} onSelect={setSelectedDish} />
-            </Reveal>
+            </div>
           ))}
         </div>
 

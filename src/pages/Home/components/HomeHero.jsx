@@ -7,23 +7,24 @@ export default function HomeHero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen w-full overflow-hidden bg-[#1a1a1a] flex items-center"
+      className="relative min-h-screen w-full overflow-hidden bg-[#1a1a1a] flex flex-col pt-32 sm:pt-36 lg:pt-40 pb-16 lg:pb-20"
     >
       {/* Background Image & Ambient Vignette */}
       <div className="absolute inset-0">
         <img
           src={HOME_IMAGES.heroBg}
           alt="Plated dish with sauce being poured"
-          className="w-full h-full object-cover opacity-70 scale-105 transition-transform duration-[2000ms] ease-out"
+          className="w-full h-full object-cover opacity-70 animate-hero-ambient"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
       </div>
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 w-full pt-32 pb-20">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 w-full my-auto">
         <div className="max-w-3xl">
-          <Reveal animation="fade-down" delay={100}>
-            <SectionLabel className="text-white/90 mb-10">
+          <Reveal animation="fade-up" delay={100}>
+            <SectionLabel className="text-white/90 mb-8 lg:mb-10">
               A Fictional Dining Concept
             </SectionLabel>
           </Reveal>

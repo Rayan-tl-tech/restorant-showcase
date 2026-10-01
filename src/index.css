@@ -5,7 +5,9 @@
 @tailwind utilities;
 
 @layer base {
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -13,85 +15,57 @@
   }
 }
 
-@keyframes pageEnter {
+/* ==========================================================================
+   Hero Cinematic Ambient Zoom (Ken Burns Hearth Drift)
+   ========================================================================== */
+@keyframes heroAmbientZoom {
   0% {
-    opacity: 0;
+    transform: scale3d(1.04, 1.04, 1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale3d(1.10, 1.10, 1) translate3d(-0.6%, -0.4%, 0);
   }
   100% {
-    opacity: 1;
+    transform: scale3d(1.06, 1.06, 1) translate3d(0.5%, 0.3%, 0);
   }
 }
 
-.page-transition {
-  animation: pageEnter 0.35s ease-out;
-}
-
-@keyframes routeProgress {
-  0% {
-    transform: scaleX(0);
-    transform-origin: left;
-    opacity: 0.8;
-  }
-  65% {
-    transform: scaleX(0.85);
-    transform-origin: left;
-    opacity: 1;
-  }
-  100% {
-    transform: scaleX(1);
-    transform-origin: left;
-    opacity: 0;
-  }
-}
-
-.animate-routeProgress {
-  animation: routeProgress 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Figma Make Luxury Curtain Wipe */
-@keyframes figmaPageWipe {
-  0% {
-    transform: translate3d(0, 100%, 0);
-    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-  }
-  38% {
-    transform: translate3d(0, 0%, 0);
-  }
-  58% {
-    transform: translate3d(0, 0%, 0);
-    animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-  }
-  100% {
-    transform: translate3d(0, -100%, 0);
-  }
-}
-
-@keyframes figmaEmblemMotion {
-  0% {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  32% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  64% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-}
-
-.curtain-wipe {
-  animation: figmaPageWipe 0.85s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+.animate-hero-ambient {
+  animation: heroAmbientZoom 22s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
   will-change: transform;
 }
 
-.emblem-motion {
-  animation: figmaEmblemMotion 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-ambient {
+    animation: none !important;
+    transform: scale3d(1.05, 1.05, 1) !important;
+  }
+}
+
+/* ==========================================================================
+   Menu Category Staggered Cascade
+   ========================================================================== */
+@keyframes dishCascadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-dish-cascade {
+  animation: dishCascadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-dish-cascade {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* ==========================================================================

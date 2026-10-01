@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Logo from "../common/Logo";
 import ArrowIcon from "../common/ArrowIcon";
 
@@ -10,48 +10,74 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
-  const [isOverImage, setIsOverImage] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isPastHero, setIsPastHero] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navRefs = useRef({});
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
+  // Optimized Scroll Handling using requestAnimationFrame and cached element positions
   useEffect(() => {
+    let ticking = false;
+    let heroEl = document.getElementById("home");
+    let menuEl = document.getElementById("menu");
+    let contactEl = document.getElementById("contact");
+
+    const updateCachedElements = () => {
+      heroEl = document.getElementById("home");
+      menuEl = document.getElementById("menu");
+      contactEl = document.getElementById("contact");
+    };
+
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const homeEl = document.getElementById("home");
-      const heroThreshold = homeEl ? Math.max(homeEl.offsetHeight - 80, 200) : 500;
-      setIsPastHero(scrollY >= heroThreshold);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const heroHeight = heroEl ? heroEl.offsetHeight : 600;
+          setIsScrolled(scrollY > 15);
+          setIsPastHero(scrollY >= heroHeight - 80);
 
-      // Section tracking for active navigation highlight
-      const scrollPos = scrollY + 220;
-      const contactEl = document.getElementById("contact");
-      const menuEl = document.getElementById("menu");
+          // Active section detection with balanced offset
+          const scrollPos = scrollY + 220;
+          if (contactEl && scrollPos >= contactEl.offsetTop) {
+            setActiveSection("contact");
+          } else if (menuEl && scrollPos >= menuEl.offsetTop) {
+            setActiveSection("menu");
+          } else {
+            setActiveSection("home");
+          }
 
-      if (contactEl && scrollPos >= contactEl.offsetTop) {
-        setActiveSection("contact");
-      } else if (menuEl && scrollPos >= menuEl.offsetTop) {
-        setActiveSection("menu");
-      } else {
-        setActiveSection("home");
+          ticking = false;
+        });
+        ticking = true;
       }
-
-      // Check if navbar (vertical band 0 to 65px) crosses any dark/contrast image
-      const navBottom = 65;
-      const images = document.querySelectorAll("main img");
-      let overImg = false;
-      for (const img of images) {
-        const rect = img.getBoundingClientRect();
-        if (rect.top <= navBottom && rect.bottom >= 0) {
-          overImg = true;
-          break;
-        }
-      }
-      setIsOverImage(overImg);
     };
 
     handleScroll();
+    const handleResize = () => {
+      updateCachedElements();
+      handleScroll();
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
+
+  // Update sliding indicator position when active section or viewport changes
+  useEffect(() => {
+    const currentLink = navRefs.current[activeSection];
+    if (currentLink) {
+      setIndicatorStyle({
+        left: currentLink.offsetLeft,
+        width: currentLink.offsetWidth,
+        opacity: 1,
+      });
+    }
+  }, [activeSection]);
 
   const scrollToSection = (id) => {
     setMobileOpen(false);
@@ -64,25 +90,18 @@ export default function Navbar() {
     }
   };
 
-  const showDarkNavbar = isPastHero && !isOverImage;
-  const logoVariant = showDarkNavbar ? "dark" : "light";
-  const textClass = showDarkNavbar
-    ? "text-[#1a1a1a]"
-    : "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]";
-  const mutedClass = showDarkNavbar
-    ? "text-[#1a1a1a]/60 hover:text-[#1a1a1a]"
-    : "text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]";
-  const underlineClass = showDarkNavbar ? "after:bg-[#1a1a1a]" : "after:bg-white";
+  // High-clarity frosted glass surface:
+  // - Dark frosted shield when scrolled anywhere on the page
+  // - Transparent overlay at very top of Hero
+  const headerBgClass = isScrolled
+    ? "bg-[#1a1a1a]/95 backdrop-blur-md border-b border-white/10 py-4 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5)]"
+    : "bg-transparent py-6 border-b border-transparent shadow-none";
 
-  const headerBgClass = isOverImage
-    ? "bg-transparent py-4 border-transparent shadow-none"
-    : isPastHero
-    ? "bg-[#f4f1ea]/85 backdrop-blur-md border-b border-[#1a1a1a]/10 py-4 shadow-sm"
-    : "bg-transparent py-6";
+  const logoVariant = "light";
+  const textClass = "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]";
+  const mutedClass = "text-white/80 hover:text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]";
 
-  const reserveBtnClass = showDarkNavbar
-    ? "bg-[#5ba4b8] hover:bg-[#4a8fa3] text-white"
-    : "bg-[#a85a3a] hover:bg-[#8f4a2e] text-white shadow-md shadow-black/20";
+  const reserveBtnClass = "bg-[#a85a3a] hover:bg-[#8f4a2e] text-white shadow-md shadow-black/20";
 
   return (
     <header
@@ -91,23 +110,24 @@ export default function Navbar() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex items-center justify-between">
         <Logo variant={logoVariant} />
 
-        <nav className="hidden lg:flex items-center gap-10" aria-label="Main Navigation">
+        {/* Desktop Navigation with Sliding Active Indicator */}
+        <nav
+          className="relative hidden lg:flex items-center gap-10"
+          aria-label="Main Navigation"
+        >
           {NAV_ITEMS.map((item) => {
             const active = activeSection === item.id;
             return (
               <a
                 key={item.id}
+                ref={(el) => (navRefs.current[item.id] = el)}
                 href={`#${item.id}`}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(item.id);
                 }}
-                className={`text-[12px] font-medium transition-colors tracking-[0.15em] font-sans ${
+                className={`text-[12px] font-medium transition-colors tracking-[0.15em] font-sans focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] rounded-sm py-1 ${
                   active ? textClass : mutedClass
-                } ${
-                  active
-                    ? `relative after:absolute after:-bottom-2 after:left-0 after:w-full after:h-px ${underlineClass}`
-                    : ""
                 }`}
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
@@ -115,24 +135,39 @@ export default function Navbar() {
               </a>
             );
           })}
+
+          {/* Smooth Sliding Underline Indicator */}
+          <span
+            className="absolute -bottom-2 h-[2px] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] bg-white"
+            style={{
+              left: `${indicatorStyle.left}px`,
+              width: `${indicatorStyle.width}px`,
+              opacity: indicatorStyle.opacity,
+            }}
+            aria-hidden="true"
+          />
         </nav>
 
+        {/* Desktop Reserve Button */}
         <a
           href="#contact"
           onClick={(e) => {
             e.preventDefault();
             scrollToSection("contact");
           }}
-          className={`hidden lg:inline-flex items-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-colors duration-300 ${reserveBtnClass}`}
+          className={`group hidden lg:inline-flex items-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-all duration-250 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] ${reserveBtnClass}`}
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          Reserve
-          <ArrowIcon className="w-3 h-3" />
+          <span className="transition-[letter-spacing] duration-250 ease-out group-hover:tracking-[0.24em]">
+            Reserve
+          </span>
+          <ArrowIcon className="w-3 h-3 transition-transform duration-250 ease-out group-hover:translate-x-1.5" />
         </a>
 
+        {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={`lg:hidden p-2 transition-colors ${showDarkNavbar ? "text-[#1a1a1a]" : "text-white"}`}
+          className="lg:hidden p-2 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] rounded-sm"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
         >
@@ -148,13 +183,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div
-          className={`lg:hidden px-6 py-8 space-y-6 border-t animate-fadeIn ${
-            showDarkNavbar
-              ? "bg-[#f4f1ea] text-[#1a1a1a] border-[#1a1a1a]/10"
-              : "bg-[#1a1a1a] text-white border-white/10"
-          }`}
-        >
+        <div className="lg:hidden px-6 py-8 space-y-6 border-t animate-fadeIn bg-[#1a1a1a] text-white border-white/10">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.id}
@@ -163,7 +192,7 @@ export default function Navbar() {
                 e.preventDefault();
                 scrollToSection(item.id);
               }}
-              className="block text-sm uppercase tracking-[0.2em] font-sans hover:opacity-70 transition-opacity"
+              className="block text-sm uppercase tracking-[0.2em] font-sans hover:opacity-70 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] py-1"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               {item.name}
@@ -175,10 +204,13 @@ export default function Navbar() {
               e.preventDefault();
               scrollToSection("contact");
             }}
-            className={`inline-block px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans text-white transition-colors ${reserveBtnClass}`}
+            className={`group inline-flex items-center gap-2 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans text-white transition-all duration-250 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] ${reserveBtnClass}`}
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Reserve
+            <span className="transition-[letter-spacing] duration-250 ease-out group-hover:tracking-[0.24em]">
+              Reserve
+            </span>
+            <ArrowIcon className="w-3 h-3 transition-transform duration-250 ease-out group-hover:translate-x-1" />
           </a>
         </div>
       )}

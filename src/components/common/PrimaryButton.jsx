@@ -15,12 +15,14 @@ export default function PrimaryButton({
     outlineLight: "bg-transparent border border-white/30 text-white hover:bg-white/10",
   };
 
-  const baseStyles = `group inline-flex items-center justify-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-all duration-300 ${variants[variant] || variants.terracotta} ${className}`;
+  const baseStyles = `group inline-flex items-center justify-center gap-3 px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] font-sans transition-all duration-250 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a85a3a] focus-visible:ring-offset-2 ${variants[variant] || variants.terracotta} ${className}`;
 
   const content = (
     <>
-      <span>{children}</span>
-      <ArrowIcon className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-1" />
+      <span className="transition-[letter-spacing] duration-250 ease-out group-hover:tracking-[0.24em]">
+        {children}
+      </span>
+      <ArrowIcon className="w-3 h-3 transition-transform duration-250 ease-out group-hover:translate-x-1.5" />
     </>
   );
 
